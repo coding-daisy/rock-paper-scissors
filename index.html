@@ -12,14 +12,31 @@
     <div></div>
 
     <h1>Welcome to the rock-paper-scissors competition!</h1>
-    <h3 id="userChoiceText">What option will you choose?</h3>
+
+    <h3 id="userChoiceToBeMadeText">What option will you choose?</h3>
+    <h3 id="userChoiceMadeText" style="display: none">great choice!</h3>
+    <h3 id="userWinsText" style="display: none">"Congratulations! You have won!"</h3>
+    <h3 id="userLosesText" style="display: none">"Oh no ... seems like you've lost."</h3>
+
     <button class="userChoiceButton" >rock</button>
     <button class="userChoiceButton" >paper</button>
     <button class="userChoiceButton" >scissors</button>
-    <h3 id="computerChoiceText" style="visibility: hidden">The computer is choosing...</h3>
+    
+    <h3 id="computerChoiceToBeMadeText"> These are the computer's options:</h3>
+    <h3 id="computerChoiceBeingMadeText" style="display: none">The computer is choosing their option...</h3>
+    <h3 id="computerChoiceMadeText" style="display: none">The computer has made a choice!</h3>
     <button class="computerChoiceButton" >rock</button>
     <button class="computerChoiceButton" >paper</button>
     <button class="computerChoiceButton" >scissors</button>
+
+    <div id="restartSection" style="display: none">
+        <p>
+            click the button to restart the game!
+        </p>
+        <button id="restartButton">
+            restart
+        </button>
+    </div>
 
     <script src="main.js"> </script>
 </body>

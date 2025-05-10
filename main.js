@@ -2,22 +2,39 @@ let scoreComputer = 0;
 let scoreUser = 0;
 let userChoiceButtons = document.querySelectorAll(".userChoiceButton");
 let computerChoiceButtons = document.querySelectorAll(".computerChoiceButton");
-let computerChoiceText = document.querySelector("#computerChoiceText");
 
+let computerChoiceToBeMadeText = document.querySelector("#computerChoiceToBeMadeText");
+let computerChoiceBeingMadeText = document.querySelector("#computerChoiceBeingMadeText");
+let computerChoiceMadeText = document.querySelector("#computerChoiceMadeText");
+let userChoiceToBeMadeText = document.querySelector("#userChoiceToBeMadeText");
+let userChoiceMadeText = document.querySelector("#userChoiceMadeText");
+
+let restartButton = document.querySelector("#restartButton");
+let restartSection = document.querySelector("#restartSection");
+
+let userWinsText = document.querySelector("#userWinsText");
+let userLosesText = document.querySelector("#userLosesText");
 
 async function play() {
-  while (scoreComputer !== 3 && scoreUser !== 3) {
+  while (scoreComputer !== 2 && scoreUser !== 2) {
     await playOneRound();
   }
+  showResult(scoreComputer - scoreUser);
+  makeRestartPossible();
 }
 
 async function playOneRound() {
   let userChoice = await getUserChoice();
+  reactionToChoice(2, 2);
+  reactionToChoice(1, 1);
   let computerChoice = await getComputerChoice();
+  reactionToChoice(1, 2)
   await wait(1000);
   let result = compareChoices(computerChoice, userChoice);
   changeScoresAndReact(result);
   resetButtons();
+  reactionToChoice(1, 0);
+  reactionToChoice(2, 0);
   alert("One round has finished");
 }
 
@@ -44,10 +61,8 @@ async function getComputerChoice() {
 }
 
 async function letComputerChoose(choice) {
-  computerChoiceText.style.visibility = "visible";
   await wait(2000);
   choose(1, choice);
-  computerChoiceText.style.visibility = "hidden";
 }
 
 async function wait(timeInMs) {
@@ -86,6 +101,41 @@ function choose(number, innerHTML) {
       button.style.visibility = "hidden";
     }
   });
+}
+
+// meaning of VALUE
+  // 0: default
+  // 1: being made (only for computer)
+  // 2: made
+function reactionToChoice(player, value) {
+    if (player === 2) {
+        if (value === 0) {
+            userChoiceToBeMadeText.style.display = "block";
+            userChoiceMadeText.style.display = "none";
+        } else if (value === 2) {
+            userChoiceToBeMadeText.style.display = "none";
+            userChoiceMadeText.style.display = "block";
+        } else {
+            throw new Error("The reactionToChoice() function was invoked with a invalid argument. (1, invalid)");
+        }
+    } else if (player === 1) {
+        if (value === 0) {
+            computerChoiceToBeMadeText.style.display = "block";
+            computerChoiceMadeText.style.display = "none";
+        } else if (value === 1) {
+            computerChoiceBeingMadeText.style.display = "block";
+            computerChoiceToBeMadeText.style.display = "none";
+        } else if (value === 2) {
+            computerChoiceBeingMadeText.style.display = "none";
+            computerChoiceMadeText.style.display = "block";
+        } else {
+            throw new Error("The reactionToChoice() function was invoked with a invalid argument. (2, invalid)");
+        }
+    } else {
+        throw new Error("The reactionToChoice() function was invoked with a invalid argument. (invalid, ...)");
+    }
+    
+
 }
 
 function compareChoices(choice1, choice2) {
@@ -133,7 +183,7 @@ function win(number) {
     scoreUser++;
     return;
   }
-  throw new Error("The win() function was invoked with a invalid argument.");
+  throw new Error("The win() function was invoked with an invalid argument.");
 }
 
 function changeScoresAndReact(result) {
@@ -159,6 +209,30 @@ function resetButtons() {
   computerChoiceButtons.forEach((button) => {
     button.style.visibility = "visible";
   });
+}
+
+function showResult(result) {
+    userChoiceToBeMadeText.style.display = "none";
+    if (result > 0) {
+        userLosesText.style.display = "block";
+    } else {
+        userWinsText.style.display = "block";
+    }
+}
+
+function makeRestartPossible() {
+    restartSection.style.display = "block";
+    restartButton.addEventListener('click', restart);
+}
+
+function restart() {
+    restartSection.style.display = "none";
+    scoreUser = 0;
+    scoreComputer = 0;
+    userLosesText.style.display = "none";
+    userWinsText.style.display = "none";
+    userChoiceToBeMadeText.style.display = "block";
+    play();
 }
 
 play();
