@@ -1,60 +1,89 @@
 let scoreComputer = 0;
 let scoreUser = 0;
-let buttons = document.querySelectorAll("button");
+let userChoiceButtons = document.querySelectorAll(".userChoiceButton");
+let computerChoiceButtons = document.querySelectorAll(".computerChoiceButton");
+let computerChoiceText = document.querySelector("#computerChoiceText");
+
 
 async function play() {
-  while ((scoreComputer !== 3) && (scoreUser !== 3)) {
+  while (scoreComputer !== 3 && scoreUser !== 3) {
     await playOneRound();
   }
 }
 
 async function playOneRound() {
-  let computerChoice = getComputerChoice();
   let userChoice = await getUserChoice();
-  console.log("computerChoice: "+ computerChoice + " userChoice: "  + userChoice);
+  let computerChoice = await getComputerChoice();
+  await wait(1000);
   let result = compareChoices(computerChoice, userChoice);
   changeScoresAndReact(result);
-  console.log("scoreComputer: " + scoreComputer + " scoreUser: " + scoreUser);
   resetButtons();
   alert("One round has finished");
 }
 
-function getComputerChoice() {
+async function getComputerChoice() {
   let randomNumber = Math.floor(Math.random() * 3); // 0, 1 or 2
+  let choice;
   switch (randomNumber) {
     case 0:
-      return "rock";
+      choice = "rock";
+      break;
     case 1:
-      return "paper";
+      choice = "paper";
+      break;
     case 2:
-      return "scissors";
+      choice = "scissors";
+      break;
     default:
       throw new Error("Invalid randomNumber for computerChoice");
   }
+
+  await letComputerChoose(choice);
+
+  return choice;
+}
+
+async function letComputerChoose(choice) {
+  computerChoiceText.style.visibility = "visible";
+  await wait(2000);
+  choose(1, choice);
+  computerChoiceText.style.visibility = "hidden";
+}
+
+async function wait(timeInMs) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, timeInMs);
+  });
 }
 
 function getUserChoice() {
   return new Promise((resolve) => {
-    buttons.forEach((button) => {
+    userChoiceButtons.forEach((button) => {
       button.addEventListener("click", handleClick);
     });
 
-    // this function should:
-    // 1. hide the buttons that weren't clicked on
-    // 2. store the id of the button clicked on
-    // 3. remove all EventListeners
-    // 4. resolve the promise with the id of the button which was clicked on
+    // 1. hide the userChoiceButtons that weren't clicked on
+    // 2. remove all EventListeners
+    // 3. resolve the promise with the innerHTML of the button which was clicked on
+
     function handleClick() {
-      buttons.forEach((button_) => {
-        if (button_ !== this) {
-          button_.style.visibility = "hidden";
-        }
+      choose(2, this.innerHTML);
+      userChoiceButtons.forEach((button_) => {
         // "this" inherited -> is still the button which was clicked on
         // every button which differs from the button which was clicked on is hidden
 
         button_.removeEventListener("click", handleClick);
       });
-      resolve(this.id);
+      resolve(this.innerHTML);
+    }
+  });
+}
+
+function choose(number, innerHTML) {
+  let relevantButtons = number == 1 ? computerChoiceButtons : userChoiceButtons;
+  relevantButtons.forEach((button) => {
+    if (innerHTML !== button.innerHTML) {
+      button.style.visibility = "hidden";
     }
   });
 }
@@ -123,8 +152,13 @@ function changeScoresAndReact(result) {
   }
 }
 
-function resetButtons(){
-
+function resetButtons() {
+  userChoiceButtons.forEach((button) => {
+    button.style.visibility = "visible";
+  });
+  computerChoiceButtons.forEach((button) => {
+    button.style.visibility = "visible";
+  });
 }
 
 play();
