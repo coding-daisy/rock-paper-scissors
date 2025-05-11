@@ -1,0 +1,27 @@
+
+#HPSection {
+    position:fixed;
+    top: 100px;
+    right: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 150px;
+}
+
+.HPBox {
+    text-align: center;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+#gameDescriptionSection {
+    display: flex; 
+    gap: 10px;
+}
+
+#nextRoundButton {
+    visibility: hidden;
+    align-self: center;
+}

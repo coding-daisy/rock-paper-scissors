@@ -1,27 +1,32 @@
-let scoreComputer = 0;
-let scoreUser = 0;
+let healthComputer = 3;
+let healthUser = 3;
+let options = ["rock", "paper", "scissors"];
+
 let userChoiceButtons = document.querySelectorAll(".userChoiceButton");
 let computerChoiceButtons = document.querySelectorAll(".computerChoiceButton");
-
-let options = ["rock", "paper", "scissors"];
 
 let userChoiceDescription = document.querySelector("#userChoiceDescription");
 let computerChoiceDescription = document.querySelector(
   "#computerChoiceDescription"
 );
 let gameDescription = document.querySelector("#gameDescription");
+let gameArea = document.querySelector("#gameArea");
 
-let restartButton = document.querySelector("#restartButton");
-let restartSection = document.querySelector("#restartSection");
+let restartGameButton = document.querySelector("#restartGameButton");
+let restartGameSection = document.querySelector("#restartGameSection");
 let nextRoundButton = document.querySelector("#nextRoundButton");
 
+let uHP = document.querySelector('#uHP');
+let cHP = document.querySelector('#cHP');
+
 async function play() {
-  while (scoreComputer !== 2 && scoreUser !== 2) {
+  updateHP()
+  while (healthComputer !== 0 && healthUser !== 0) {
     await playOneRound();
     await nextRound();
-    reset();
+    resetRound();
   }
-  showResult(scoreComputer - scoreUser);
+  showResult();
   makeRestartPossible();
 }
 
@@ -34,7 +39,6 @@ async function playOneRound() {
   let computerChoice = await getComputerChoice();
 
   reactionToChoice(1, 2);
-  await wait(1000);
 
   let result = determineWinner(computerChoice, userChoice);
   changeScoresAndReact(result);
@@ -42,12 +46,15 @@ async function playOneRound() {
 
 async function nextRound() {
   nextRoundButton.style.visibility = "visible";
+  if (healthComputer == 0 || healthUser == 0) {
+    nextRoundButton.innerText = "next";
+  }
   return new Promise((resolve) => {
-    nextRoundButton.addEventListener('click', () => {
+    nextRoundButton.addEventListener("click", () => {
       nextRoundButton.style.visibility = "hidden";
       resolve();
-    })
-  })
+    });
+  });
 }
 
 async function getComputerChoice() {
@@ -104,12 +111,14 @@ function choose(number, textContent) {
 function reactionToChoice(player, value) {
   if (player === 1) {
     if (value === 0) {
-      computerChoiceDescription.textContent = "These are the computer's options:";
+      computerChoiceDescription.textContent =
+        "These are the computer's options:";
     } else if (value == 1) {
       computerChoiceDescription.textContent =
         "The computer is making up its mind ...";
+      gameDescription.textContent =
+        "It's time for the computer to make a choice!";
     } else if (value === 2) {
-      gameDescription.textContent = "It's time for the computer to make a choice!";
       computerChoiceDescription.textContent = "The computer has made a choice!";
     } else {
       throw new Error(
@@ -150,16 +159,19 @@ function determineWinner(choice1, choice2) {
   return value;
 }
 
-
 function changeScoresAndReact(result) {
   switch (result) {
     case 0:
       gameDescription.textContent = "It's a tie!";
       break;
     case 1:
+      healthUser--;
+      updateHP();
       gameDescription.textContent = "The computer won this round!";
       break;
     case 2:
+      healthComputer--;
+      updateHP();
       gameDescription.textContent = "You won this round!";
       break;
     default:
@@ -167,13 +179,22 @@ function changeScoresAndReact(result) {
   }
 }
 
-function reset() {
-  resetButtons();
-  reactionToChoice(1, 0);
-  reactionToChoice(2, 0);
+function updateHP() {
+  let brokenHeart = "\uD83D\uDC94";
+  let fullHeart = "❤️";
+  uHP.innerHTML = fullHeart.repeat(healthUser) + brokenHeart.repeat(3-healthUser);
+  cHP.innerHTML = fullHeart.repeat(healthComputer) + brokenHeart.repeat(3-healthComputer);
 }
 
-function resetButtons() {
+
+function resetRound() {
+  resetRoundButtons();
+  reactionToChoice(1, 0);
+  reactionToChoice(2, 0);
+  nextRoundButton.innerText = "next round!";
+}
+
+function resetRoundButtons() {
   userChoiceButtons.forEach((button) => {
     button.style.visibility = "visible";
   });
@@ -183,23 +204,26 @@ function resetButtons() {
 }
 
 function showResult(result) {
-  if (result > 0) {
+  if (healthComputer === 0) {
     gameDescription.textContent = "Congratulations! You have won!";
   } else {
     gameDescription.textContent = "Oh no ... seems like you've lost.";
   }
+
 }
 
 function makeRestartPossible() {
-  restartSection.style.display = "block";
-  restartButton.addEventListener("click", restart);
+  restartGameSection.style.display = "block";
+  gameArea.style.display = "none";
+  restartGameButton.addEventListener("click", restartGame);
 }
 
-function restart() {
-  restartSection.style.display = "none";
-  scoreUser = scoreComputer = 0;
+function restartGame() {
+  restartGameSection.style.display = "none";
+  healthUser = healthComputer = 3;
   reactionToChoice(1, 0);
   reactionToChoice(2, 0);
+  gameArea.style.display = "block";
   play();
 }
 

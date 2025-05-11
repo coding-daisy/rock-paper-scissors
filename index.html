@@ -4,37 +4,52 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <link href="style.css" rel="stylesheet" />
   </head>
   <body>
-    
-
     <h1>Welcome to the rock-paper-scissors competition!</h1>
 
-    <div style="display: flex; gap: 10px">
-      <h3 id="gameDescription">It's time for you to make a choice!</h3>
-      <button
-        id="nextRoundButton"
-        style="visibility: hidden; align-self: center"
-      >
-        next round!
-      </button>
+    <div id="HPSection">
+      <div class="HPBox">
+        your HP:
+        <br />
+        <span id="uHP"></span>
+      </div>
+      <div class="HPBox">
+        computer HP:
+        <br />
+        <span id="cHP"></span>
+      </div>
     </div>
 
+    
+    <div id="gameDescriptionSection">
+      <h3 id="gameDescription">It's time for you to make a choice!</h3>
+      <button id="nextRoundButton">next round!</button>
+    </div>
+
+    <div id="gameArea">
     <h3 id="userChoiceDescription">What option will you choose?</h3>
 
-    <button class="userChoiceButton">rock</button>
-    <button class="userChoiceButton">paper</button>
-    <button class="userChoiceButton">scissors</button>
+    <div id="userChoiceButtonSection">
+      <button class="userChoiceButton">rock</button>
+      <button class="userChoiceButton">paper</button>
+      <button class="userChoiceButton">scissors</button>
+    </div>
 
     <h3 id="computerChoiceDescription">These are the computer's options:</h3>
 
-    <button class="computerChoiceButton">rock</button>
-    <button class="computerChoiceButton">paper</button>
-    <button class="computerChoiceButton">scissors</button>
+    <div id ="computerChoiceButtonSection">
+      <button class="computerChoiceButton">rock</button>
+      <button class="computerChoiceButton">paper</button>
+      <button class="computerChoiceButton">scissors</button>
+    </div>
 
-    <div id="restartSection" style="display: none">
+</div>
+
+    <div id="restartGameSection" style="display: none">
       <p>click the button to restart the game!</p>
-      <button id="restartButton">restart</button>
+      <button id="restartGameButton">restart</button>
     </div>
 
     <script src="main.js"></script>
